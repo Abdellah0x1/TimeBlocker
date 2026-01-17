@@ -7,12 +7,22 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { useTasks } from "../contexts/TasksContext";
 
 
 
-function AddTaskModal({setIsAddModalOpen,handelSubmit}) {
+function AddTaskModal({setIsAddModalOpen}) {
     const [title, setTitle] = useState("")
     const [category, setCategory] = useState("Work");
+
+    const {addTask} = useTasks();
+
+    function handelSubmit (e,title,category){
+            e.preventDefault();
+            addTask({title,category})
+            setIsAddModalOpen(false)
+    }
+    
     
     return (
         <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="fixed inset-0 flex items-center justify-center z-999 bg-black/30 ">

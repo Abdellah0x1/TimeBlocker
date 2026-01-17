@@ -3,16 +3,10 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css'; // <--- MANDATORY CSS
 
 import { CATEGORIES_LIST } from "../../constants/CATAEGORY_COLOR";
+import { useTasks } from "../contexts/TasksContext";
 
 const localizer = momentLocalizer(moment)
 
-const events = [
-    {
-        start : moment('2026-01-13T08:00:00').toDate(),
-        end : moment('2026-01-13T09:00:00').toDate(),
-        title : "test w safi"
-    }
-]
 
 
 function eventStyleGetter(event){
@@ -25,13 +19,23 @@ function eventStyleGetter(event){
             opacity: 0.8   
         }
     }
-
 }
 
 function PlannerPage() {
+    const {state} = useTasks() 
+
+    const formattedEvents = state.schedule.map((task) => {
+        return {
+        ...task,
+        start: new Date(task.start), 
+        end: new Date(task.end)
+        };
+  });
+
+
     return (
         <div>
-            <Calendar localizer={localizer} events={events} eventPropGetter={eventStyleGetter}/>
+            <Calendar localizer={localizer} events={formattedEvents} eventPropGetter={eventStyleGetter}/>
         </div>
 
     )

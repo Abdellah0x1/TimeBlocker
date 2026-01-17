@@ -25,6 +25,17 @@ export function TasksProvier({children}){
             setStoredTasks({...state, bucket: state.bucket.filter(task => task.id !== action.payload)})
             return {...state, bucket: state.bucket.filter(task => task.id !== action.payload)}
         }
+        if (action.type === 'SCHEDULE_TASK') {
+            const {taskId, start,end} = action.payload;
+            const taskToMove = state.bucket.find(task=>task.id === taskId);
+            const scheduleTask = {
+                ...taskToMove,
+                start,
+                end
+            }
+            setStoredTasks({...state, bucket: state.bucket.filter(task => task.id !== taskId),schedule: [...state.schedule,scheduleTask]})
+            return {...state, bucket: state.bucket.filter(task => task.id !== taskId),schedule: [...state.schedule,scheduleTask]}
+        }
     }
 
     
@@ -43,6 +54,13 @@ export function TasksProvier({children}){
         dispatch({type: 'DELETE_TASK', payload: id})
     }
 
+    function scheduleTask(taskId, start, end){
+        dispatch({
+            type: 'SCHEDULE_TASK',
+            payload: {taskId, start, end}
+        })
+    }
+
 
     
 
@@ -50,6 +68,7 @@ export function TasksProvier({children}){
         state,
         addTask,
         removeTask,
+        scheduleTask
     }}>{children}</TasksContext.Provider>
 }
 

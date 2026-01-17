@@ -1,10 +1,8 @@
-import { createContext, useContext, useState, useReducer } from "react";
+import { createContext, useContext, useReducer } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 
 const TasksContext = createContext();
-
-
 
 
 
@@ -23,18 +21,20 @@ export function TasksProvier({children}){
             setStoredTasks({...state, bucket: [...state.bucket, action.payload]})
              return {...state, bucket: [...state.bucket, action.payload]}
         }
-        if (action.type === 'DELETE_TASK') return {...state, bucket: state.bucket.filter(task => task.id !== action.payload)}
+        if (action.type === 'DELETE_TASK') {
+            setStoredTasks({...state, bucket: state.bucket.filter(task => task.id !== action.payload)})
+            return {...state, bucket: state.bucket.filter(task => task.id !== action.payload)}
+        }
     }
 
     
 
-    const [schedule, setSchedule] = useState([])
 
-    function addTask({title,category}){
+    function addTask({title,category = 'Work / Career'}){
         dispatch({type: 'ADD_TASK', payload: {
             id: crypto.randomUUID(),
             title: title,
-            category: category
+            category: category 
         }})
         
     }
@@ -42,6 +42,9 @@ export function TasksProvier({children}){
     function removeTask(id){
         dispatch({type: 'DELETE_TASK', payload: id})
     }
+
+
+    
 
     return <TasksContext.Provider value={{
         state,
